@@ -2,6 +2,7 @@
 
 using namespace std;
 
+const string PLIK_WEJSCIOWY = "./dane/symbole.txt";
 const int LICZBA_LINII = 2000;
 const int LICZBA_KOLUMN = 12;
 
@@ -94,10 +95,106 @@ void zadanie2() {
 }
 
 
+int symbolNaCyfre(char symbol) {
+    if (symbol == 'o')
+        return 0;
+    if (symbol == '+')
+        return 1;
+    return 2;
+}
+
+
+char cyfraNaSymbol(int cyfra) {
+    if (cyfra == 0)
+        return 'o';
+    if (cyfra == 1)
+        return '+';
+    return '*';
+}
+
+
+int symboleNaDziesietny(string linia) {
+    int mnoznik = 1;
+    int wynik = 0;
+    int wagaPozycji = 3;
+
+    for (int i = linia.length() - 1; i >= 0; i--) {
+        int cyfra = symbolNaCyfre(linia[i]);
+        wynik += cyfra * mnoznik;
+        mnoznik *= wagaPozycji;
+    }
+
+    return wynik;
+}
+
+
+string dziesietnyNaSymbole(int liczba) {
+    string wynik = "";
+    int wagaPozycji = 3;
+
+    while (liczba > 0) {
+        int cyfra = liczba % wagaPozycji;
+        // wynik = cyfraNaSymbol(cyfra) + wynik;
+        wynik += cyfraNaSymbol(cyfra);
+        liczba = liczba / wagaPozycji;
+    }
+
+    reverse(wynik.begin(), wynik.end());
+    return wynik; 
+}
+
+
+void zadanie3() {
+    fin.open(PLIK_WEJSCIOWY);
+    fout.open("./wyniki/wyniki2.txt");
+    fout << "2.3." << endl;
+
+    int maksi = 0;
+    string maksiLinia = "";
+    string linia;
+
+    for (int i = 0; i < LICZBA_LINII; i++) {
+        fin >> linia;
+        int wartoscLinii = symboleNaDziesietny(linia);
+        if (maksi < wartoscLinii) {
+            maksi = wartoscLinii;
+            maksiLinia = linia;
+        }
+    }
+
+    fout << maksi << " " << maksiLinia << endl;
+
+    fin.close();
+    fout.close();
+}
+
+
+void zadanie4() {
+    fin.open(PLIK_WEJSCIOWY);
+    fout.open("./wyniki/wyniki2.txt");
+    fout << "2.4." << endl;
+
+    int suma = 0;
+    string linia;
+
+    for (int i = 0; i < LICZBA_LINII; i++) {
+        fin >> linia;
+        suma += symboleNaDziesietny(linia);
+    }
+
+    fout << suma << " " << dziesietnyNaSymbole(suma) << endl;
+
+    fin.close();
+    fout.close();
+}
+
+
 int main() {
 
-    // zadanie1();
+    zadanie1();
     zadanie2();
+    zadanie3();
+    zadanie4();
 
     return 0;
 }
